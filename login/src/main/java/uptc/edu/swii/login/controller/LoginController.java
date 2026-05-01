@@ -1,18 +1,12 @@
 package uptc.edu.swii.login.controller;
 
-import co.edu.uptc.edakafka.model.Login;
-import co.edu.uptc.edakafka.service.LoginEventProducer;
-import co.edu.uptc.edakafka.service.LoginService;
+import uptc.edu.swii.login.model.Login;
+import uptc.edu.swii.login.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 public class LoginController {
-
-    @Autowired
-    private LoginEventProducer loginEventProducer;
 
     @Autowired
     private LoginService loginService;
@@ -20,13 +14,12 @@ public class LoginController {
 
     @PostMapping("/addlogin")
     public String addLogin(@RequestBody Login login){
-        loginEventProducer.sendAddLoginEvent(login);
-        return loginEventProducer.toString();
+        return loginService.save(login).toString();
     }
 
     @PostMapping("/editlogin")
     public void editLogin(@RequestBody Login login){
-        loginEventProducer.sendEditLoginEvent(login);
+        loginService.update(login);
     }
 
     @GetMapping("/findlogin/{customerid}")
@@ -36,8 +29,12 @@ public class LoginController {
 
     @PostMapping("/login")
     public String login(@RequestBody Login login){
-        loginEventProducer.sendLogin(login);
-        return "Procesando inicio de sesión";
+       boolean auth = loginService.auth(login);
+       if (auth){
+           return "Inicio de sesion correcto";
+       }else {
+           return "credenciales incorrectas";
+       }
     }
 
 }
