@@ -16,7 +16,6 @@ public class LoginService {
     }
 
     public Login save(Login login){
-        login.setId(null);
         return loginRepository.save(login);
     }
 
@@ -25,18 +24,29 @@ public class LoginService {
         return optional.orElse(null);
     }
 
-    public boolean auth(String customerid,String password){
-        Login login = findByCustomerId(customerid);
+    public boolean auth(Login login){
+        Optional<Login> existingLogin = loginRepository.findByCustomerid(login.getCustomerid());
+        return existingLogin.isPresent() && login.getPassword().equals(existingLogin.get().getPassword());
 
-        if(login == null){
-            return false;
+    }
+
+    public Login update(Login login){
+        Optional<Login> existingLogin = loginRepository.findByCustomerid(login.getCustomerid());
+
+        if(existingLogin.isPresent()){
+            Login loginToUpdate = existingLogin.get();
+
+            if(login.getCustomerid() != null){
+                loginToUpdate.setCustomerid(login.getCustomerid());
+            }
+            if(login.getPassword() != null){
+                loginToUpdate.setPassword(login.getPassword());
+            }
+
+            return loginRepository.save(loginToUpdate);
         }
 
-        if(login.getPassword().equals(password)){
-            return true;
-        }
-
-        return false;
+        throw new RuntimeException("Login no encontrado de usuario " + login.getCustomerid());
     }
 
 
