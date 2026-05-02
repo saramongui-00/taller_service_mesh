@@ -49,5 +49,13 @@ public class LoginService {
         throw new RuntimeException("Login no encontrado de usuario " + login.getCustomerid());
     }
 
+    public boolean deleteById(String customerid){
+        if(loginRepository.existsById(customerid)){
+            loginRepository.deleteById(customerid);
+            return true;
+        }
+        return false;
+    }
+
 
 }

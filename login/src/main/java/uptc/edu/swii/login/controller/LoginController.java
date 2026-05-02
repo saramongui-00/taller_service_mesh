@@ -37,4 +37,12 @@ public class LoginController {
        }
     }
 
+    @DeleteMapping("/deletelogin/{id}")
+    public String deleteLogin(@PathVariable String id){
+        if(loginService.deleteById(id)){
+            return "Login eliminado correctamente";
+        }
+        return "Login no encontrado o no se puede eliminar";
+    }
+
 }
