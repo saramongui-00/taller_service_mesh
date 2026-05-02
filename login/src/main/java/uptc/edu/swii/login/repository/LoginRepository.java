@@ -9,4 +9,7 @@ public interface LoginRepository extends JpaRepository<Login, Long> {
 
     Optional<Login> findByCustomerid(String customerid);
 
+    boolean existsById(String customerid);
+
+    void deleteById(String customerid);
 }
