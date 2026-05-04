@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: login-service
-          image: order-service:latest
+          image: login-service:latest
           imagePullPolicy: Never
           ports:
             - containerPort: 8080
