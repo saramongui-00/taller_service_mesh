@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: login-service
+  name: customer-service
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: login-service
+      app: customer-service
   template:
     metadata:
       labels:
-        app: login-service
+        app: customer-service
     spec:
       containers:
-        - name: login-service
-          image: login-service:latest
+        - name: customer-service
+          image: customer-service:latest
           imagePullPolicy: Never
           ports:
             - containerPort: 8080

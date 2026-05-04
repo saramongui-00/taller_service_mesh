@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
-  name: login-service
+  name: customer-service
 spec:
   gateways:
     - my-gateway
@@ -13,6 +13,6 @@ spec:
             prefix: /
       route:
         - destination:
-            host: login-service
+            host: customer-service
             port:
               number: 80
