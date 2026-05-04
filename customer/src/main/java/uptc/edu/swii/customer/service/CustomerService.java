@@ -1,64 +1,69 @@
 package uptc.edu.swii.customer.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import uptc.edu.swii.customer.dto.CustomerRequest;
 import uptc.edu.swii.customer.model.Customer;
 import uptc.edu.swii.customer.repository.CustomerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-
 
 @Service
 public class CustomerService {
-    @Autowired
+
     private final CustomerRepository customerRepository;
 
     public CustomerService(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
     }
 
-    public boolean save(CustomerRequest customerRequest){
-        boolean flag = false;
-        Customer mapCustomer = new Customer(customerRequest.getDocument(), customerRequest.getFirstname(),
-                customerRequest.getLastname(), customerRequest.getAddress(), customerRequest.getPhone(), customerRequest.getEmail());
-        Customer processCustomer = customerRepository.saveAndFlush(mapCustomer);
-        if (processCustomer!=null){
+    public Customer save(Customer customer) {
+        return customerRepository.save(customer);
+    }
 
-            flag=true;
+    public Customer update(Customer customer) {
+        Optional<Customer> existingCustomer = customerRepository.findById(customer.getDocument());
+
+        if (existingCustomer.isPresent()) {
+            Customer customerToUpdate = existingCustomer.get();
+
+            if (customer.getDocument() != null) {
+                customerToUpdate.setDocument(customer.getDocument());
+            }
+            if (customer.getFirstname() != null) {
+                customerToUpdate.setFirstname(customer.getFirstname());
+            }
+            if (customer.getLastname() != null) {
+                customerToUpdate.setLastname(customer.getLastname());
+            }
+            if (customer.getAddress() != null) {
+                customerToUpdate.setAddress(customer.getAddress());
+            }
+            if (customer.getPhone() != null) {
+                customerToUpdate.setPhone(customer.getPhone());
+            }
+            if (customer.getEmail() != null) {
+                customerToUpdate.setEmail(customer.getEmail());
+            }
+            return customerToUpdate;
         }
-        return flag;
+
+        throw new RuntimeException("Cliente no encontrado ");
     }
 
-    public boolean delete(Customer customer){
-        boolean flag = false;
-        try{
-            customerRepository.delete(customer);
-            flag=true;
-        }catch(Exception e){
-            System.out.println(e.getMessage());
+    public boolean deleteById(String document) {
+        if (customerRepository.existsById(document)) {
+            customerRepository.deleteById(document);
+            return true;
         }
-        return flag;
+        return false;
     }
 
-    public Customer findById(String document){
-        Customer customer=null;
-        Optional<Customer> optionalCustomer = customerRepository.findById(document);
-        if (optionalCustomer.isPresent())
-            customer = optionalCustomer.get();
-        return customer;
+    public List<Customer> findAll() {
+        return customerRepository.findAll();
     }
 
-    public List<Customer> findAll(){
-        List<Customer> listCustomer = new ArrayList<Customer>();
-        Iterable<Customer> customers = customerRepository.findAll();
-        customers.forEach((o) ->{
-            listCustomer.add(o);
-        });
-        return listCustomer;
+    public List<Customer> findByDocument(String document) {
+        return customerRepository.findByDocument(document);
     }
 
 }
